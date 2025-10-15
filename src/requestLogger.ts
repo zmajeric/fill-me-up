@@ -1,7 +1,7 @@
 import pinoHttp from 'pino-http';
-import { logger } from './logger.js';
+import {logger} from './logger.js';
 
 export const requestLogger = pinoHttp({
-  logger,
-  autoLogging: true,
+    logger,
+    autoLogging: true,
 });

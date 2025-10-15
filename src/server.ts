@@ -15,7 +15,7 @@ export function createApp() {
 export function apiV1Router() {
     const router = Router();
     router.get('/health', (req, res) => {
-        res.json({ status: 'ok', uptime: process.uptime() });
+        res.json({status: 'ok', uptime: process.uptime()});
     })
     return router;
 }
