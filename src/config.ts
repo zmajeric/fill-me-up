@@ -10,7 +10,7 @@ const EnvSchema = z.object({
     PORT: z.coerce.number().int().positive().default(3000),
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
     LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
-    MONGO_URL: z.string().url().default('mongodb://root:r00t@localhost:27017/fmu?authSource=admin'),
+    MONGO_URL: z.string().url().default('mongodb://root:r00t@localhost:27017/fmu?replicaSet=rs0'),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

@@ -1,7 +1,8 @@
 import {MenuItemModel, RestaurantModel} from "../models/Restaurant";
-import {OrderModel} from "../models/Order";
-import {DolReachedError} from "../exceptions";
+import {OrderModel, OrderStatus} from "../models/Order";
+import {DolReachedError, ModelNotFound, OrderStatusTransitionNotAllowed} from "../exceptions";
 import {CreateOrderDTO} from "../api/v1/schemas";
+import mongoose from "mongoose";
 
 export async function createOrder(order: CreateOrderDTO, restaurantId: string, menuItemsIds: string[]) {
     const restaurant = await RestaurantModel.findById(restaurantId).lean();
@@ -28,4 +29,35 @@ export async function createOrder(order: CreateOrderDTO, restaurantId: string, m
     }
 
     return await OrderModel.create(persist);
+}
+
+export async function updateOrderStatus(orderId: string, status: OrderStatus) {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+        const order = await OrderModel.findById(orderId).session(session);
+        if (!order) throw new ModelNotFound('Order', orderId);
+
+        const allowed: Record<OrderStatus, OrderStatus[]> = {
+            PENDING: ['CONFIRMED'],
+            CONFIRMED: ['DELIVERED', 'CANCELLED'],
+            DELIVERED: [],
+            CANCELLED: []
+        };
+
+        if (!allowed[order.status].includes(status)) {
+            throw new OrderStatusTransitionNotAllowed(order.status, status);
+        }
+
+        order.status = status;
+        await order.save({session});
+
+        await session.commitTransaction();
+        return order.toObject();
+    } catch (err) {
+        await session.abortTransaction();
+        throw err;
+    } finally {
+        await session.endSession();
+    }
 }

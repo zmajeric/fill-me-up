@@ -20,3 +20,17 @@ export class MenuItemAndRestaurantMismatchError extends DomainError {
         this.statusCode = 403;
     }
 }
+
+export class ModelNotFound extends DomainError {
+    constructor(modelName: string, orderId: any) {
+        super(`${modelName} with id:${orderId} not found`);
+        this.statusCode = 404;
+    }
+}
+
+export class OrderStatusTransitionNotAllowed extends DomainError {
+    constructor(currentStatus: any, status: any) {
+        super(`Status of order from ${currentStatus} to ${status} is not allowed`);
+        this.statusCode = 403;
+    }
+}

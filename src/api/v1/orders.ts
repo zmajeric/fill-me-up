@@ -1,6 +1,6 @@
 import {Router} from "express";
 import {OrderModel} from "../../models/Order";
-import {postOrder} from "../../controllers/v1/orders";
+import {postOrder, patchOrder} from "../../controllers/v1/orders";
 import {DomainError} from "../../exceptions";
 
 export function setupOrders(router: Router) {
@@ -21,5 +21,16 @@ export function setupOrders(router: Router) {
         }
         
     });
+    router.patch('/:id/status', async (req, res, next) => {
+        try {
+            await patchOrder(req, res, next);
+        }catch (e) {
+            if (e instanceof DomainError) {
+                res.status(e.statusCode).json({error: e.message});
+            } else {
+                res.status(500).json({error: e});
+            }
+        }
+    })
     return router;
 }

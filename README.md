@@ -19,4 +19,5 @@ Dependencies used:
 * 3H - setup database, generate models, add routes
 * 3H - dealing with models, correct relations, proper loading & familiarizing with it, 
 * 1H - implementing business logic (functional requirements) for placing orders
-* 2H - optimizing: seperating routes, controllers and business logic, propagating errors properly
+* 2H - optimizing: seperating routes (API), controllers and business logic, propagating errors properly
+* 2H - working with transactions, adapting mongodb settings&connection, added updateOrderStatus method

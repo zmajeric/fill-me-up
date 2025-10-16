@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 
+export type OrderStatus = 'PENDING' | 'CONFIRMED' | 'DELIVERED' | 'CANCELLED';
+
 const OrderSchema = new mongoose.Schema(
     {
         userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true},
@@ -7,8 +9,8 @@ const OrderSchema = new mongoose.Schema(
         items: {type: [{type: mongoose.Schema.Types.ObjectId, ref: 'MenuItem'}], required: true},
         status: {
             type: String,
-            enum: ['pending', 'confirmed', 'delivered', 'cancelled'],
-            default: 'pending',
+            enum: ['PENDING', 'CONFIRMED', 'DELIVERED', 'CANCELLED'],
+            default: 'PENDING',
             index: true
         },
         total: {type: Number, required: true, min: 0},
