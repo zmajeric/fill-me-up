@@ -1,6 +1,6 @@
 import {MenuItemModel, RestaurantModel} from "../models/Restaurant";
 import {OrderModel} from "../models/Order";
-import {DolReachedError, DomainError, MenuItemAndRestaurantMismatchError} from "../exceptions";
+import {DolReachedError} from "../exceptions";
 import {CreateOrderDTO} from "../api/v1/schemas";
 
 export async function createOrder(order: CreateOrderDTO, restaurantId: string, menuItemsIds: string[]) {
@@ -10,19 +10,17 @@ export async function createOrder(order: CreateOrderDTO, restaurantId: string, m
         // return res.status(400).json({error: 'Restaurant is out of available orders'});
     }
 
-    const menuItems = await MenuItemModel.find({_id: {$in: menuItemsIds}}).lean();
-    if (menuItems.length !== menuItemsIds.length) {
-        throw new DomainError('One or more menu items not found');
-        // return res.status(400).json({error: 'One or more menu items not found'});
-    }
+    const qty = new Map<string, number>();
+    for (const id of menuItemsIds) qty.set(id, (qty.get(id) ?? 0) + 1);
+
+    const menuItems = await MenuItemModel
+        .find({_id: {$in: [...qty.keys()]}, restaurant: restaurantId})
+        .select({_id: 1, price: 1})
+        .lean();
+
+    const priceById = new Map(menuItems.map(mi => [mi._id.toString(), mi.price]));
     let total = 0;
-    for (const mi of menuItems) {
-        if (mi.restaurant.toString() != restaurantId) {
-            throw new MenuItemAndRestaurantMismatchError(mi._id.toString(), restaurantId);
-            // res.status(403).json({error: 'Invalid menu items provided: not from the same restaurant'});
-        }
-        total += mi.price;
-    }
+    for (const [id, count] of qty) total += (priceById.get(id) ?? 0) * count;
 
     const persist = {
         ...order,
