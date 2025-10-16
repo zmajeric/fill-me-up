@@ -1,11 +1,10 @@
 import mongoose from 'mongoose';
-import {MenuItemSchema} from "./Restaurant";
 
 const OrderSchema = new mongoose.Schema(
     {
         userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true},
         restaurantId: {type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant', required: true, index: true},
-        items: {type: [MenuItemSchema], required: true},
+        items: {type: [{type: mongoose.Schema.Types.ObjectId, ref: 'MenuItem'}], required: true},
         status: {
             type: String,
             enum: ['pending', 'confirmed', 'delivered', 'cancelled'],

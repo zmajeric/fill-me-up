@@ -26,6 +26,10 @@ export function setupMainRoutes() {
     return router;
 }
 
+const MenuItemRestaurant = z.object({
+    name: z.string(),
+    price: z.number().nonnegative()
+});
 const CreateRestaurantReq = z.object({
     name: z.string().min(1),
     address: z.string().min(1),
@@ -36,24 +40,21 @@ const CreateRestaurantReq = z.object({
 
 const CreateUserReq = z.object({
     email: z.string().email(),
+    password: z.string().min(7),
     name: z.string().min(1),
-    role: z.enum(['customer', 'admin']).optional(),
 });
 
-const MenuItem = z.object({
-    name: z.string(),
-    price: z.number().nonnegative()
-});
+const MenuItemIdsOrder = z.string();
 const CreateOrderReq = z.object({
     userId: z.string().min(1),
     restaurantId: z.string().min(1),
-    items: z.array(MenuItem).min(1),
+    items: z.array(MenuItemIdsOrder).min(1)
 });
 
 export function setupV1Routes() {
     const router = Router();
     router.get('/restaurants', async (_req, res) => {
-        const list = await RestaurantModel.find().lean();
+        const list = await RestaurantModel.find().populate('menus').lean();
         res.json({restaurants: list});
     });
 
@@ -65,12 +66,24 @@ export function setupV1Routes() {
         res.status(201).json({restaurant: created});
     });
 
-    // router.post('/restaurants/:id/menu-items', async (req, res, next) => {
-    //     const menuItem = MenuItem.safeParse(req.body);
-    //     if (!menuItem.success) return next(menuItem.error);
-    //     const created = await MenuItemModel.create(menuItem.data)
-    //     res.status(201).json({menuItem: created});
-    // });
+    router.post('/restaurants/:id/menu-items', async (req, res, next) => {
+        const queryId = req.params.id;
+        const restaurant = await RestaurantModel.findById(queryId);
+        if (!restaurant) return res.status(404).json({error: 'Restaurant not found'});
+
+        const menuItem = MenuItemRestaurant.safeParse(req.body);
+        if (!menuItem.success) return next(menuItem.error);
+
+        const persist = {
+            ...menuItem.data,
+            restaurant: new mongoose.Types.ObjectId(restaurant.id),
+        }
+
+        const createdMenuItem = await MenuItemModel.create(persist)
+        restaurant.menus.push(createdMenuItem._id);
+        await restaurant.save()
+        res.status(201).json({menuItem: menuItem});
+    });
 
     // users
     router.get('/users', async (_req, res) => {
