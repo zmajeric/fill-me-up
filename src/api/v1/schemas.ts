@@ -6,6 +6,7 @@ export const CreateOrderReq = z.object({
     restaurantId: z.string().min(1),
     items: z.array(MenuItemIdsOrder).min(1)
 });
+export type CreateOrderDTO = z.infer<typeof CreateOrderReq>;
 
 export const MenuItemRestaurant = z.object({
     name: z.string(),
