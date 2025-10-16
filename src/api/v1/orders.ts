@@ -9,6 +9,15 @@ export function setupOrders(router: Router) {
         res.json({orders: list});
     });
 
+    router.get('/:id', async (req, res) => {
+        const orderId = req.params.id;
+        const order = await OrderModel.findById(orderId)
+            .populate('userId')
+            .populate('items')
+            .lean();
+        res.json({order});
+    });
+
     router.post('/', async (req, res, next) => {
         try {
             await postOrder(req, res, next);

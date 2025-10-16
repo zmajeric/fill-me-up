@@ -18,7 +18,7 @@ export async function postOrder(req: Request, res: Response, next: NextFunction)
     }
 
     try {
-        const createdOrder =  createOrder(parsedOrder.data, restaurantId, menuItemsIds);
+        const createdOrder =  await createOrder(parsedOrder.data, restaurantId, menuItemsIds);
         return res.status(201).json({order: createdOrder});
     } catch (e) {
         throw e;
@@ -31,7 +31,8 @@ export async function patchOrder(req: Request, res: Response, next: NextFunction
     const orderId = req.params.id;
 
     try {
-        await updateOrderStatus(orderId, status.data.status);
+        const updatedOrder = await updateOrderStatus(orderId, status.data.status);
+        return res.status(201).json({order: updatedOrder});
     } catch (e) {
         throw e;
     }

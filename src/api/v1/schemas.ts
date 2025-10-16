@@ -6,6 +6,12 @@ export const CreateOrderReq = z.object({
     restaurantId: z.string().min(1),
     items: z.array(MenuItemIdsOrder).min(1)
 });
+export const UpdateOrderStatusReq = z.object({
+    status: z.enum(['CONFIRMED', 'DELIVERED', 'CANCELLED'])
+});
+export type UpdateOrderStatusInput = z.infer<typeof UpdateOrderStatusReq>;
+
+// TODO: dont belong her
 export type CreateOrderDTO = z.infer<typeof CreateOrderReq>;
 
 export const MenuItemRestaurant = z.object({

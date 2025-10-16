@@ -32,7 +32,7 @@ export function setupRestaurants(router: Router) {
         const createdMenuItem = await MenuItemModel.create(persist)
         restaurant.menus.push(createdMenuItem._id);
         await restaurant.save()
-        res.status(201).json({menuItem: menuItem});
+        res.status(201).json({menuItem: createdMenuItem});
     });
     return router;
 }
