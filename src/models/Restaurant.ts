@@ -19,7 +19,7 @@ const RestaurantSchema = new mongoose.Schema(
         phone: {type: String},
         isActive: {type: Boolean, default: true},
         menus: [{type: mongoose.Schema.Types.ObjectId, ref: 'MenuItem'}],
-        dol: {type: Number, required: true, min: 0},
+        dol: {type: Number, default: 9999},
     },
     {timestamps: true}
 );
