@@ -14,13 +14,6 @@ export class DolReachedError extends DomainError {
     }
 }
 
-export class MenuItemAndRestaurantMismatchError extends DomainError {
-    constructor(menuItemId: any, restaurantId: any) {
-        super(`Menu item with id:${menuItemId} is not part of the restaurantId: '${restaurantId}'`);
-        this.statusCode = 403;
-    }
-}
-
 export class ModelNotFound extends DomainError {
     constructor(modelName: string, orderId: any) {
         super(`${modelName} with id:${orderId} not found`);

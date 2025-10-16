@@ -1,16 +1,13 @@
 import {createServer} from 'node:http';
-import {createApp} from './server.js';
+import {createApp} from './api/server';
 import {loadEnv} from "./config";
-import {logger} from "./logger";
-import mongoose from "mongoose";
+import {logger} from "./utils/logger";
+import {connectDb} from "./db";
 
 const env = loadEnv();
 
 async function main() {
-    mongoose.set('strictQuery', true);
-    await mongoose.connect(env.MONGO_URL);
-    logger.info('Connected to DB with URL: ' + env.MONGO_URL);
-
+    connectDb(env.MONGO_URL)
     const app = createApp();
     const server = createServer(app);
     server.listen(env.PORT, () => {

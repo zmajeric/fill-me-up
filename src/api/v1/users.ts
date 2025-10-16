@@ -2,8 +2,8 @@ import {Router} from "express";
 import {UserModel} from "../../models/User";
 import {CreateUserReq} from "./schemas";
 
-export function setupUsers(router: Router) {
-    // users
+export function setupUsers() {
+    const router = Router();
     router.get('/', async (_req, res) => {
         const list = await UserModel.find().lean();
         res.json({users: list});

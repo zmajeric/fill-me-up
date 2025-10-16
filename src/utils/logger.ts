@@ -1,5 +1,5 @@
 import pino from 'pino';
-import {loadEnv} from './config.js';
+import {loadEnv} from '../config';
 
 const env = loadEnv();
 

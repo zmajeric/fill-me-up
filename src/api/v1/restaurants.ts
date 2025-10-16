@@ -3,8 +3,9 @@ import {MenuItemModel, RestaurantModel} from "../../models/Restaurant";
 import mongoose from "mongoose";
 import {CreateRestaurantReq, MenuItemRestaurant} from "./schemas";
 
-export function setupRestaurants(router: Router) {
-    router.get('/restaurants', async (_req, res) => {
+export function setupRestaurants() {
+    const router = Router();
+    router.get('/', async (_req, res) => {
         const list = await RestaurantModel.find().populate('menus').lean();
         res.json({restaurants: list});
     });

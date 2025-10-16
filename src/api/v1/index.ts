@@ -5,8 +5,8 @@ import {setupOrders} from "./orders";
 
 const router = Router();
 
-router.use("/orders", setupOrders(router));
-router.use("/restaurants", setupRestaurants(router));
-router.use("/users", setupUsers(router));
+router.use("/orders", setupOrders());
+router.use("/restaurants", setupRestaurants());
+router.use("/users", setupUsers());
 
 export default router;
