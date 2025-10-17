@@ -1,5 +1,5 @@
 import {afterAll, beforeAll, beforeEach, describe, expect, it} from 'vitest';
-import {MongoMemoryServer, MongoMemoryReplSet} from 'mongodb-memory-server';
+import {MongoMemoryReplSet} from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import {DolReachedError} from "../../src/exceptions";
 import {OrderModel} from "../../src/models/Order";

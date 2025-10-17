@@ -9,10 +9,24 @@ Dependencies used:
 * Pino (logger)
 * zod (object parser and validator)
 
-# How to run
+## Prerequisites
+### MongoDB
+```bash
+```
+
+## How to run
+```bash
+cp .env.example .env
+npm install
+```
+```bash
+npm run build
+npm start
+```
 `npm run dev` - development
 
-
+# How to test
+`npm run test` - unit tests
 
 # TimeTracking
 * 4.5H - project bootstrap (health endpoint, logging working) & familiarization with node structure
@@ -21,3 +35,4 @@ Dependencies used:
 * 1H - implementing business logic (functional requirements) for placing orders
 * 2H - optimizing: seperating routes (API), controllers and business logic, propagating errors properly
 * 2H - working with transactions, adapting mongodb settings&connection, added updateOrderStatus method
+* 6H - improvements & optimizations
