@@ -1,5 +1,5 @@
 export class DomainError extends Error {
-    statusCode: number = 400;
+    statusCode: number;
 
     constructor(message: string) {
         super(message);
@@ -9,20 +9,21 @@ export class DomainError extends Error {
 }
 
 export class DolReachedError extends DomainError {
-    constructor(restaurantId: any, dol: any) {
+    constructor(restaurantId: string, dol: number) {
         super(`Order ${restaurantId} cannot transition to state '${dol}'`);
+        this.statusCode = 403;
     }
 }
 
 export class ModelNotFound extends DomainError {
-    constructor(modelName: string, orderId: any) {
+    constructor(modelName: string, orderId: string) {
         super(`${modelName} with id:${orderId} not found`);
         this.statusCode = 404;
     }
 }
 
 export class OrderStatusTransitionNotAllowed extends DomainError {
-    constructor(currentStatus: any, status: any) {
+    constructor(currentStatus: string, status: string) {
         super(`Status of order from ${currentStatus} to ${status} is not allowed`);
         this.statusCode = 403;
     }

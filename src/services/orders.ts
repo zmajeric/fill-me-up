@@ -2,14 +2,15 @@ import {MenuItemModel, RestaurantModel} from "../models/Restaurant";
 import {OrderModel, OrderStatus} from "../models/Order";
 import {DolReachedError, ModelNotFound, OrderStatusTransitionNotAllowed} from "../exceptions";
 import mongoose from "mongoose";
+import {endOfToday, startOfToday} from "../utils/utils";
 
 export async function createOrder(userId: string, restaurantId: string, menuItemsIds: string[]) {
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
-        const restaurant = await RestaurantModel.findById(restaurantId).session(session).lean();
+        const restaurant = await RestaurantModel.findById(restaurantId).session(session);
         const todayCount = await OrderModel.countDocuments({
-            restaurant: restaurantId,
+            restaurantId: restaurantId,
             status: {$in: ['PENDING', 'CONFIRMED']},
             createdAt: {$gte: startOfToday(), $lt: endOfToday()},
         }).session(session);
@@ -36,7 +37,10 @@ export async function createOrder(userId: string, restaurantId: string, menuItem
             items: menuItemsIds,
             total: total,
         }
-        return await OrderModel.create(persist);
+        const createdOrder = await OrderModel.create([persist], {session}).then(orders => orders[0]);
+        await session.commitTransaction();
+
+        return createdOrder;
     } catch (err) {
         await session.abortTransaction();
         throw err;
@@ -74,16 +78,4 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
     } finally {
         await session.endSession();
     }
-}
-
-function startOfToday(): Date {
-    const d = new Date();
-    d.setHours(0, 0, 0, 0);
-    return d;
-}
-
-function endOfToday(): Date {
-    const d = new Date();
-    d.setHours(23, 59, 59, 999);
-    return d;
 }

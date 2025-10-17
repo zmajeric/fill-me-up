@@ -2,6 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {CreateOrderReq, UpdateOrderStatusReq} from "../../api/v1/schemas";
 import mongoose from "mongoose";
 import {createOrder, updateOrderStatus} from "../../services/orders";
+import {DomainError} from "../../exceptions";
 
 export async function postOrder(req: Request, res: Response, next: NextFunction) {
     const parsedOrder = CreateOrderReq.safeParse(req.body);
@@ -21,7 +22,11 @@ export async function postOrder(req: Request, res: Response, next: NextFunction)
         const createdOrder =  await createOrder(parsedOrder.data.userId, restaurantId, menuItemsIds);
         return res.status(201).json({order: createdOrder});
     } catch (e) {
-        throw e;
+        if (e instanceof DomainError) {
+            res.status(e.statusCode).json({error: e.message});
+        } else {
+            res.status(500).json({error: `Unknown error occurred: ${e}`});
+        }
     }
 }
 
@@ -32,8 +37,12 @@ export async function patchOrder(req: Request, res: Response, next: NextFunction
 
     try {
         const updatedOrder = await updateOrderStatus(orderId, status.data.status);
-        return res.status(201).json({order: updatedOrder});
+        return res.status(200).json({order: updatedOrder});
     } catch (e) {
-        throw e;
+        if (e instanceof DomainError) {
+            res.status(e.statusCode).json({error: e.message});
+        } else {
+            res.status(500).json({error: e});
+        }
     }
 }

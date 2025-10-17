@@ -16,31 +16,15 @@ export function setupOrders() {
             .populate('userId')
             .populate('items')
             .lean();
+        if (order === null) return res.status(404).json({error: 'Order not found'});
         res.json({order});
     });
 
     router.post('/', async (req, res, next) => {
-        try {
-            await postOrder(req, res, next);
-        } catch (e) {
-            if (e instanceof DomainError) {
-                res.status(e.statusCode).json({error: e.message});
-            } else {
-                res.status(500).json({error: 'Unknown error occurred'});
-            }
-        }
-
+        await postOrder(req, res, next);
     });
     router.patch('/:id/status', async (req, res, next) => {
-        try {
-            await patchOrder(req, res, next);
-        } catch (e) {
-            if (e instanceof DomainError) {
-                res.status(e.statusCode).json({error: e.message});
-            } else {
-                res.status(500).json({error: e});
-            }
-        }
+        await patchOrder(req, res, next);
     })
     return router;
 }
