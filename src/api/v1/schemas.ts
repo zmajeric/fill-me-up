@@ -11,10 +11,12 @@ export const UpdateOrderStatusReq = z.object({
 });
 export type UpdateOrderStatusInput = z.infer<typeof UpdateOrderStatusReq>;
 
-export const MenuItemRestaurant = z.object({
-    name: z.string(),
-    price: z.number().nonnegative()
-});
+export const MenuItemRestaurant = z.array(
+    z.object({
+        name: z.string(),
+        price: z.number().nonnegative()
+    })
+);
 export const CreateRestaurantReq = z.object({
     name: z.string().min(1),
     address: z.string().min(1),

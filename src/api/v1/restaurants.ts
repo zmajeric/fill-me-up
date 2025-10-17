@@ -22,18 +22,19 @@ export function setupRestaurants() {
         const restaurant = await RestaurantModel.findById(queryId);
         if (!restaurant) return res.status(404).json({error: 'Restaurant not found'});
 
-        const menuItem = MenuItemRestaurant.safeParse(req.body);
-        if (!menuItem.success) return next(menuItem.error);
+        const menuItems = MenuItemRestaurant.safeParse(req.body);
+        if (!menuItems.success) return next(menuItems.error);
 
-        const persist = {
-            ...menuItem.data,
-            restaurant: new mongoose.Types.ObjectId(restaurant.id),
-        }
+        const persist = menuItems.data.map(mi => ({
+            name: mi.name,
+            price: mi.price,
+            restaurant: restaurant.id,
+        }));
 
-        const createdMenuItem = await MenuItemModel.create(persist)
-        restaurant.menus.push(createdMenuItem._id);
+        const createdMenuItems = await MenuItemModel.insertMany(persist)
+        restaurant.menus.push(...createdMenuItems.map(mi => mi._id));
         await restaurant.save()
-        res.status(201).json({menuItem: createdMenuItem});
+        res.status(201).json({menuItems: createdMenuItems});
     });
     return router;
 }
