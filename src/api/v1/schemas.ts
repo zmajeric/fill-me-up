@@ -11,9 +11,6 @@ export const UpdateOrderStatusReq = z.object({
 });
 export type UpdateOrderStatusInput = z.infer<typeof UpdateOrderStatusReq>;
 
-// TODO: dont belong her
-export type CreateOrderDTO = z.infer<typeof CreateOrderReq>;
-
 export const MenuItemRestaurant = z.object({
     name: z.string(),
     price: z.number().nonnegative()

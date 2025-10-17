@@ -1,21 +1,20 @@
 import {MenuItemModel, RestaurantModel} from "../models/Restaurant";
 import {OrderModel, OrderStatus} from "../models/Order";
 import {DolReachedError, ModelNotFound, OrderStatusTransitionNotAllowed} from "../exceptions";
-import {CreateOrderDTO} from "../api/v1/schemas";
 import mongoose from "mongoose";
 
-export async function createOrder(order: CreateOrderDTO, restaurantId: string, menuItemsIds: string[]) {
+export async function createOrder(userId: string, restaurantId: string, menuItemsIds: string[]) {
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
-        const restaurant = await RestaurantModel.findById(restaurantId).lean();
+        const restaurant = await RestaurantModel.findById(restaurantId).session(session).lean();
         const todayCount = await OrderModel.countDocuments({
             restaurant: restaurantId,
             status: {$in: ['PENDING', 'CONFIRMED']},
             createdAt: {$gte: startOfToday(), $lt: endOfToday()},
-        }).lean();
+        }).session(session);
 
-        if (restaurant != null && todayCount > restaurant.dol) {
+        if (restaurant != null && todayCount >= restaurant.dol) {
             throw new DolReachedError(restaurantId, restaurant.dol);
         }
 
@@ -25,14 +24,16 @@ export async function createOrder(order: CreateOrderDTO, restaurantId: string, m
         const menuItems = await MenuItemModel
             .find({_id: {$in: [...qty.keys()]}, restaurant: restaurantId})
             .select({_id: 1, price: 1})
-            .lean();
+            .session(session);
 
         const priceById = new Map(menuItems.map(mi => [mi._id.toString(), mi.price]));
         let total = 0;
         for (const [id, count] of qty) total += (priceById.get(id) ?? 0) * count;
 
         const persist = {
-            ...order,
+            userId: userId,
+            restaurantId: restaurantId,
+            items: menuItemsIds,
             total: total,
         }
         return await OrderModel.create(persist);

@@ -18,7 +18,7 @@ export async function postOrder(req: Request, res: Response, next: NextFunction)
     }
 
     try {
-        const createdOrder =  await createOrder(parsedOrder.data, restaurantId, menuItemsIds);
+        const createdOrder =  await createOrder(parsedOrder.data.userId, restaurantId, menuItemsIds);
         return res.status(201).json({order: createdOrder});
     } catch (e) {
         throw e;
