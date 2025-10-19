@@ -1,7 +1,6 @@
 import {Router} from "express";
-import {OrderModel} from "../../models/Order";
-import {postOrder, patchOrder} from "../../controllers/v1/orders";
-import {DomainError} from "../../exceptions";
+import {OrderModel} from "../../models/Order.js";
+import {patchOrder, postOrder} from "../../controllers/v1/orders.js";
 
 export function setupOrders() {
     const router = Router();

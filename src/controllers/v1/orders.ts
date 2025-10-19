@@ -1,8 +1,8 @@
 import {NextFunction, Request, Response} from "express";
-import {CreateOrderReq, UpdateOrderStatusReq} from "../../api/v1/schemas";
 import mongoose from "mongoose";
-import {createOrder, updateOrderStatus} from "../../services/orders";
-import {DomainError} from "../../exceptions";
+import {CreateOrderReq, UpdateOrderStatusReq} from "../../api/v1/schemas.js";
+import {createOrder, updateOrderStatus} from "../../services/orders.js";
+import {DomainError} from "../../exceptions/index.js";
 
 export async function postOrder(req: Request, res: Response, next: NextFunction) {
     const parsedOrder = CreateOrderReq.safeParse(req.body);
@@ -19,7 +19,7 @@ export async function postOrder(req: Request, res: Response, next: NextFunction)
     }
 
     try {
-        const createdOrder =  await createOrder(parsedOrder.data.userId, restaurantId, menuItemsIds);
+        const createdOrder = await createOrder(parsedOrder.data.userId, restaurantId, menuItemsIds);
         return res.status(201).json({order: createdOrder});
     } catch (e) {
         if (e instanceof DomainError) {

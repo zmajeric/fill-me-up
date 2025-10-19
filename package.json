@@ -2,7 +2,7 @@
   "name": "fmu",
   "version": "0.2.0",
   "private": true,
-  "type": "commonjs",
+  "type": "module",
   "engines": {
     "node": ">=18.17"
   },

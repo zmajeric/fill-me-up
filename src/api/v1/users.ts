@@ -1,6 +1,6 @@
 import {Router} from "express";
-import {UserModel} from "../../models/User";
-import {CreateUserReq} from "./schemas";
+import {UserModel} from "../../models/User.js";
+import {CreateUserReq} from "./schemas.js";
 
 export function setupUsers() {
     const router = Router();

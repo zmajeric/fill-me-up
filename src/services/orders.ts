@@ -1,8 +1,8 @@
-import {MenuItemModel, RestaurantModel} from "../models/Restaurant";
-import {OrderModel, OrderStatus} from "../models/Order";
-import {DolReachedError, ModelNotFound, OrderStatusTransitionNotAllowed} from "../exceptions";
 import mongoose from "mongoose";
-import {endOfToday, startOfToday} from "../utils/utils";
+import {MenuItemModel, RestaurantModel} from "../models/Restaurant.js";
+import {OrderModel, OrderStatus} from "../models/Order.js";
+import {DolReachedError, ModelNotFound, OrderStatusTransitionNotAllowed} from "../exceptions/index.js";
+import {endOfToday, startOfToday} from "../utils/utils.js";
 
 export async function createOrder(userId: string, restaurantId: string, menuItemsIds: string[]) {
     const session = await mongoose.startSession();

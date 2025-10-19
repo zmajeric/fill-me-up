@@ -1,8 +1,8 @@
 import {createServer} from 'node:http';
-import {createApp} from './api/server';
-import {loadEnv} from "./config";
-import {logger} from "./utils/logger";
-import {connectDb} from "./db";
+import {createApp} from './api/server.js';
+import {loadEnv} from "./config.js";
+import {logger} from "./utils/logger.js";
+import {connectDb} from "./db.js";
 
 const env = loadEnv();
 

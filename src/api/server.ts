@@ -1,6 +1,6 @@
 import express, {Router} from 'express';
-import {requestLogger} from '../utils/requestLogger';
-import v1 from "./v1";
+import {requestLogger} from '../utils/requestLogger.js';
+import v1 from "./v1/index.js";
 
 export function createApp() {
     const app = express();

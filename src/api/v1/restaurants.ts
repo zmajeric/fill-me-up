@@ -1,7 +1,6 @@
 import {Router} from "express";
-import {MenuItemModel, RestaurantModel} from "../../models/Restaurant";
-import mongoose from "mongoose";
-import {CreateRestaurantReq, MenuItemRestaurant} from "./schemas";
+import {MenuItemModel, RestaurantModel} from "../../models/Restaurant.js";
+import {CreateRestaurantReq, MenuItemRestaurant} from "./schemas.js";
 
 export function setupRestaurants() {
     const router = Router();
