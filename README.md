@@ -10,11 +10,12 @@ Dependencies used:
 * zod (object parser and validator)
 
 ## Prerequisites
-* MongoDB 7 (`brew install mongodb-community@7.0`)
+* local MongoDB 7 (`brew install mongodb-community@7.0`)
 
 ## How to run
-I have not been able to setup dockerization since my system is too old for docker (MacOS 12),
-so everything is running on local machine. 
+_I have not been able to setup dockerization since my system is too old for docker daemon (MacOS 12),
+so everything is running on local machine._
+
 * Start MongoDB
 ```bash
 mongod --config /Users/zmajeric/work/node-api-starter-full/mongod.conf
@@ -41,13 +42,21 @@ npm start
 * 1H - implementing business logic (functional requirements) for placing orders
 * 2H - optimizing: seperating routes (API), controllers and business logic, propagating errors properly
 * 2H - working with transactions, adapting mongodb settings&connection, added updateOrderStatus method
-* 6H - improvements & optimizations
+* 6-8H - improvements & optimizations
 
-## Endpoints 
+## Notes
+* There are some improvements that I am aware of but didnt do due to time constraints: moving business logic for other 
+models to controller and service, adding DAL layer (repository) to decauple and make it easier to mock.
+* I couldnt setup docker and spent quite a while dealing with dependencies for node and dev tools in general. My older 
+version of macbook from 2014 didnt support newer versions of osx, which I didnt anticipate at all. Because of that I didnt 
+deliver on time I personally set, for which I apologize.
+* I tried to time track as best as I could, mainly for personal reference and I believe its a good practice. 
+
+## Testing endpoints 
 
 ### Health Check
 
-- GET /health - Check if the service is running
+- GET /health - Check if the service is runing
     ```bash
     curl -X GET http://localhost:3000/health
     ```
