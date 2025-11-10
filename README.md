@@ -9,6 +9,8 @@ Dependencies used:
 * Pino (logger)
 * zod (object parser and validator)
 
+[ View Instructions (PDF)](./INSTRUCTIONS.pdf)
+
 ## Prerequisites
 * local MongoDB 7 (`brew install mongodb-community@7.0`)
 
